@@ -6,7 +6,9 @@ export const createProduct = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { title, price, description, image, categoryId } = req.body;
+    const image = req.file?.filename || "";
+    console.log(image, "hello image");
+    const { title, price, description, categoryId } = req.body;
     const newProduct = new PRODUCT(
       title,
       price,

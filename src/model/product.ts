@@ -9,6 +9,7 @@ export interface IProduct extends RowDataPacket {
   description: string;
   image: string;
   categoryId: number;
+  categoryName: string;
 }
 class PRODUCT {
   title: string;
@@ -35,7 +36,9 @@ class PRODUCT {
   }
   static async getProducts(): Promise<IProduct[]> {
     try {
-      const rows = await db.execute<IProduct[]>("SELECT * FROM products");
+      const rows = await db.execute<IProduct[]>(
+        `SELECT title,price,description,image,categoryName FROM products join categories on products.categoryId = categories.categoryId`
+      );
       return rows[0];
     } catch (error) {
       throw new Error(`Failed to get products: `);
