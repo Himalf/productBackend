@@ -11,6 +11,7 @@ export const createCategory = async (
     const newCategory = new CATEGORY(categoryName);
     const result = await newCategory.createCategory();
     res.status(201).json({
+      result,
       message: "Category created successfully",
     });
   } catch (error) {
