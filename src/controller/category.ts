@@ -1,12 +1,7 @@
-import { error } from "console";
-import CATEGORY from "../model/category";
 import { Request, Response } from "express";
-interface Category {
-  categoryId: number;
-  categoryName: string;
-}
+import CATEGORY, { ICategory } from "../model/category";
 
-// To create or post category data
+// Create category
 export const createCategory = async (
   req: Request,
   res: Response
@@ -14,30 +9,34 @@ export const createCategory = async (
   try {
     const { categoryName } = req.body;
     const newCategory = new CATEGORY(categoryName);
-    const createCategories = await newCategory.createCategory();
-    res.json({
-      createCategories,
-      msg: "Categories table created successfully",
+    const result = await newCategory.createCategory();
+    res.status(201).json({
+      message: "Category created successfully",
     });
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    res.status(500).json({
+      error: "Failed to create category",
+    });
   }
 };
 
-// to get or display the category data
+// Get all categories
 export const getCategories = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
     const categories = await CATEGORY.getCategories();
-    res.status(200).json({ categories });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message || "Internal server Error" });
+    res.status(200).json(categories);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: "Failed to fetch categories",
+    });
   }
 };
 
-// to get category by its ID
+// Get category by ID
 export const getCategoryById = async (
   req: Request,
   res: Response
@@ -45,43 +44,57 @@ export const getCategoryById = async (
   try {
     const { id } = req.params;
     const category = await CATEGORY.getCategoryById(Number(id));
-    res.status(200).json({ category });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message || "Internal server Error" });
+    if (!category) {
+      res.status(404).json({
+        error: `Category with ID ${id} not found`,
+      });
+      return;
+    }
+    res.status(200).json(category);
+  } catch (error) {
+    res.status(500).json({
+      error: "Failed to fetch category",
+    });
   }
 };
-// to update the category data
-export const updateCategories = async (
+
+// Update category
+export const updateCategory = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
     const { id } = req.params;
     const { categoryName } = req.body;
-    const newCategory = new CATEGORY(categoryName);
-    const updateCategory = await newCategory.updateCategory(Number(id));
+    const category = new CATEGORY(categoryName);
+    const result = await category.updateCategory(Number(id));
+
     res.status(200).json({
-      updateCategory,
-      msg: "Category Section Updated Successfully",
+      result,
+      message: "Category updated successfully",
     });
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({
+      error: "Failed to update category",
+    });
   }
 };
 
-// to delete the category data
-export const deleteCategories = async (
+// Delete category
+export const deleteCategory = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const deleteCategory = await CATEGORY.deleteCategory(Number(id));
+    const result = await CATEGORY.deleteCategory(Number(id));
     res.status(200).json({
-      deleteCategory,
-      msg: `Category of id:${id} deleted successfully`,
+      result,
+      message: "Category deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({ error: "Internal Server error" });
+    res.status(500).json({
+      error: "Failed to delete category",
+    });
   }
 };

@@ -3,14 +3,15 @@ const router = express.Router();
 import {
   createCategory,
   getCategories,
-  updateCategories,
-  deleteCategories,
+  updateCategory,
+  deleteCategory,
   getCategoryById,
 } from "../controller/category";
+
 router.get("/", getCategories);
 router.get("/:id", getCategoryById);
 router.post("/", createCategory);
-router.put("/:id", updateCategories);
-router.delete("/:id", deleteCategories);
+router.put("/:id", updateCategory);
+router.delete("/:id", deleteCategory);
 
 export default router;
