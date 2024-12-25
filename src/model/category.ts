@@ -20,7 +20,7 @@ class CATEGORY {
     let sql = `UPDATE CATEGORY SET categoryName = '${this.categoryName}' WHERE categoryId = ${categoryId}`;
     return db.execute(sql);
   }
-  deleteCategory(categoryId: number) {
+  static deleteCategory(categoryId: number) {
     let sql = `DELETE FROM CATEGORY WHERE categoryId = ${categoryId}`;
     return db.execute(sql);
   }
