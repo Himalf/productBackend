@@ -1,10 +1,4 @@
 import db from "../config/db";
-import { RowDataPacket } from "mysql2"; // Import RowDataPacket type for proper typing
-
-interface Category {
-  categoryId: number;
-  categoryName: string;
-}
 class CATEGORY {
   categoryName: string;
   constructor(categoryName: string) {
