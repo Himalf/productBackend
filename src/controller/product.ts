@@ -1,6 +1,7 @@
 import PRODUCT from "../model/product";
 import { Request, Response } from "express";
 
+// create the product data
 export const createProduct = async (
   req: Request,
   res: Response
@@ -27,6 +28,8 @@ export const createProduct = async (
     });
   }
 };
+
+// get the product data
 export const getProducts = async (
   req: Request,
   res: Response
@@ -38,6 +41,8 @@ export const getProducts = async (
     res.status(500).json("Internal server error");
   }
 };
+
+// get the single product
 export const getProductById = async (
   req: Request,
   res: Response
@@ -50,13 +55,16 @@ export const getProductById = async (
     res.status(500).json("Internal server error");
   }
 };
+
+// update the product data
 export const updateProducts = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
+    const image = req.file?.filename || "";
     const { id } = req.params;
-    const { title, price, description, image, categoryId } = req.body;
+    const { title, price, description, categoryId } = req.body;
     const newProduct = new PRODUCT(
       title,
       price,
@@ -73,6 +81,8 @@ export const updateProducts = async (
     res.status(500).json("Internal Server Error");
   }
 };
+
+// delete the product data
 export const deleteProducts = async (
   req: Request,
   res: Response
