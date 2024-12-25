@@ -1,6 +1,12 @@
+import { error } from "console";
 import CATEGORY from "../model/category";
 import { Request, Response } from "express";
+interface Category {
+  categoryId: number;
+  categoryName: string;
+}
 
+// To create or post category data
 export const createCategory = async (
   req: Request,
   res: Response
@@ -13,23 +19,38 @@ export const createCategory = async (
       createCategories,
       msg: "Categories table created successfully",
     });
-  } catch (error) {
-    res.status(500).json({ error: "Internal server Error" });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
   }
 };
 
+// to get or display the category data
 export const getCategories = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
     const categories = await CATEGORY.getCategories();
-    res.status(200).json(categories);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server Error" });
+    res.status(200).json({ categories });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message || "Internal server Error" });
   }
 };
 
+// to get category by its ID
+export const getCategoryById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const category = await CATEGORY.getCategoryById(Number(id));
+    res.status(200).json({ category });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message || "Internal server Error" });
+  }
+};
+// to update the category data
 export const updateCategories = async (
   req: Request,
   res: Response
@@ -48,6 +69,7 @@ export const updateCategories = async (
   }
 };
 
+// to delete the category data
 export const deleteCategories = async (
   req: Request,
   res: Response
