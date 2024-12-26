@@ -95,14 +95,37 @@ export const updateProducts = async (
   res: Response
 ): Promise<void> => {
   try {
-    const image = req.file?.filename || "";
+    const image = req.file;
+    if (!image) {
+      res.status(400).json({ error: "Image file is required" });
+      return; // Exit function after sending response
+    }
+    const { data, error } = await supabase.storage
+      .from("products")
+      .upload(`${image?.originalname}`, image.buffer, {
+        cacheControl: "3600",
+        upsert: true,
+        contentType: image.mimetype,
+      });
+    if (error) {
+      res.status(500).json({ error: error.message });
+      return; // Exit function after sending response
+    }
+    const publicUrl = supabase.storage
+      .from("products")
+      .getPublicUrl(data?.path || "").data.publicUrl;
+    if (!publicUrl) {
+      res.status(500).json({ error: "Failed to generate public URL" });
+      return; // Exit function after sending response
+    }
+
     const { id } = req.params;
     const { title, price, description, categoryId } = req.body;
     const newProduct = new PRODUCT(
       title,
       price,
       description,
-      image,
+      publicUrl,
       categoryId
     );
     const result = await newProduct.updateProduct(Number(id));
