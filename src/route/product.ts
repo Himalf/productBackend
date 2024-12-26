@@ -8,14 +8,17 @@ import {
   updateProducts,
   deleteProducts,
 } from "../controller/product";
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "public");
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.originalname);
+//   },
+// });
+// const upload = multer({ storage: storage });
+
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 router.get("/", getProducts); // to get products
 router.get("/:id", getProductById); // to get products by id

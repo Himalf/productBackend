@@ -1,5 +1,6 @@
 import PRODUCT from "../model/product";
 import { Request, Response } from "express";
+import { supabase } from "../middleware/supabaseClient";
 
 // create the product data
 export const createProduct = async (
@@ -7,22 +8,52 @@ export const createProduct = async (
   res: Response
 ): Promise<void> => {
   try {
-    const image = req.file?.filename || "";
-    console.log(image, "hello image");
+    const image = req.file;
+    if (!image) {
+      res.status(400).json({ error: "Image file is required" });
+      return; // Exit function after sending response
+    }
+
+    const { data, error } = await supabase.storage
+      .from("products")
+      .upload(`${image?.originalname}`, image.buffer, {
+        cacheControl: "3600",
+        upsert: true,
+        contentType: image.mimetype,
+      });
+
+    if (error) {
+      res.status(500).json({ error: error.message });
+      return; // Exit function after sending response
+    }
+
+    const publicUrl = supabase.storage
+      .from("products")
+      .getPublicUrl(data?.path || "").data.publicUrl;
+
+    if (!publicUrl) {
+      res.status(500).json({ error: "Failed to generate public URL" });
+      return; // Exit function after sending response
+    }
+
+    console.log(publicUrl, "hello image");
     const { title, price, description, categoryId } = req.body;
+
     const newProduct = new PRODUCT(
       title,
       price,
       description,
-      image,
+      publicUrl,
       categoryId
     );
+
     const result = await newProduct.createProduct();
     res.status(201).json({
       result,
       message: "Product created successfully",
     });
   } catch (error) {
+    console.error("Error creating product:", error);
     res.status(500).json({
       error: "Failed to create product",
     });
