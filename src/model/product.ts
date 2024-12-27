@@ -37,22 +37,22 @@ class PRODUCT {
     return db.execute(sql);
   }
 
-  // Get all products
+  // Get all products with pagination and sorting
   static async getProducts(
-    limit: number = 0,
-    sort: string = "asc"
+    limit: number = 10, // Default limit
+    sort: string = "asc" // Default sort order
   ): Promise<IProduct[]> {
     try {
       const orderBy = sort === "desc" ? "DESC" : "ASC";
-      const limitClause = limit > 0 ? `LIMIT ${limit}` : "";
 
       const sql = `
-        SELECT products.productId, products.title, products.price, products.description, products.image, categories.categoryName 
-        FROM products 
-        JOIN categories ON products.categoryId = categories.categoryId
-        ORDER BY products.title ${orderBy}
-        ${limitClause}
-      `;
+      SELECT products.productId, products.title, products.price, products.description, products.image, categories.categoryName 
+      FROM products 
+      JOIN categories ON products.categoryId = categories.categoryId
+      ORDER BY products.title ${orderBy}
+      LIMIT ${limit}
+    `;
+
       const [rows] = await db.execute<IProduct[]>(sql);
       return rows;
     } catch (error) {

@@ -69,6 +69,7 @@ export const getProducts = async (
     const limit = Number(req.query.limit) || 0;
     const sort = typeof req.query.sort === "string" ? req.query.sort : "asc";
     const products = await PRODUCT.getProducts(limit, sort);
+
     res.status(200).json(products);
   } catch (error) {
     res.status(500).json("Internal server error");
