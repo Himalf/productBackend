@@ -36,7 +36,7 @@ export const createProduct = async (
       return; // Exit function after sending response
     }
 
-    console.log(publicUrl, "hello image");
+    // console.log(publicUrl, "hello image");
     const { title, price, description, categoryId } = req.body;
 
     const newProduct = new PRODUCT(
