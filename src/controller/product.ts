@@ -36,7 +36,7 @@ export const createProduct = async (
       return; // Exit function after sending response
     }
 
-    console.log(publicUrl, "hello image");
+    // console.log(publicUrl, "hello image");
     const { title, price, description, categoryId } = req.body;
 
     const newProduct = new PRODUCT(
@@ -69,7 +69,6 @@ export const getProducts = async (
     const limit = Number(req.query.limit) || 0;
     const sort = typeof req.query.sort === "string" ? req.query.sort : "asc";
     const products = await PRODUCT.getProducts(limit, sort);
-
     res.status(200).json(products);
   } catch (error) {
     res.status(500).json("Internal server error");
