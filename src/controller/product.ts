@@ -1,7 +1,6 @@
 import PRODUCT from "../model/product";
 import { Request, Response } from "express";
 import { supabase } from "../middleware/supabaseClient";
-
 // create the product data
 export const createProduct = async (
   req: Request,
@@ -11,9 +10,8 @@ export const createProduct = async (
     const image = req.file;
     if (!image) {
       res.status(400).json({ error: "Image file is required" });
-      return; // Exit function after sending response
+      return;
     }
-
     const { data, error } = await supabase.storage
       .from("products")
       .upload(`${image?.originalname}`, image.buffer, {
@@ -21,24 +19,18 @@ export const createProduct = async (
         upsert: true,
         contentType: image.mimetype,
       });
-
     if (error) {
       res.status(500).json({ error: error.message });
-      return; // Exit function after sending response
+      return;
     }
-
     const publicUrl = supabase.storage
       .from("products")
       .getPublicUrl(data?.path || "").data.publicUrl;
-
     if (!publicUrl) {
       res.status(500).json({ error: "Failed to generate public URL" });
-      return; // Exit function after sending response
+      return;
     }
-
-    // console.log(publicUrl, "hello image");
     const { title, price, description, categoryId } = req.body;
-
     const newProduct = new PRODUCT(
       title,
       price,
@@ -46,7 +38,6 @@ export const createProduct = async (
       publicUrl,
       categoryId
     );
-
     const result = await newProduct.createProduct();
     res.status(201).json({
       result,
