@@ -5,6 +5,7 @@ import cors from "cors";
 import bodyparser from "body-parser";
 import Category from "./route/category";
 import Product from "./route/product";
+import User from "./route/user"; // Importing the user route
 dotenv.config();
 // middlewares
 const app: Express = express();
@@ -15,6 +16,7 @@ const port = process.env.PORT || 3000;
 
 app.use("/products", Product);
 app.use("/categories", Category);
+app.use("/api", User); // Using the user route
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
 });
