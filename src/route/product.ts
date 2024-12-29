@@ -8,21 +8,12 @@ import {
   updateProducts,
   deleteProducts,
 } from "../controller/product";
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, "public");
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, file.originalname);
-//   },
-// });
-// const upload = multer({ storage: storage });
-
+import { authUser } from "../middleware/authUser";
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-router.get("/", getProducts); // to get products
-router.get("/:id", getProductById); // to get products by id
-router.post("/", upload.single("image"), createProduct); // to post product data
-router.put("/:id", upload.single("image"), updateProducts); // to update the product data
-router.delete("/:id", deleteProducts); // to delete the product data
+router.get("/", authUser, getProducts); // to get products
+router.get("/:id", authUser, getProductById); // to get products by id
+router.post("/", authUser, upload.single("image"), createProduct); // to post product data
+router.put("/:id", authUser, upload.single("image"), updateProducts); // to update the product data
+router.delete("/:id", authUser, deleteProducts); // to delete the product data
 export default router;
