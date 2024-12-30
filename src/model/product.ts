@@ -62,7 +62,7 @@ class PRODUCT {
   static async getProductById(productId: number): Promise<IProduct | null> {
     try {
       const [rows] = await db.execute<IProduct[]>(
-        "SELECT * FROM products WHERE productId = ?",
+        "SELECT products.productId, products.title, products.price, products.description, products.image, categories.categoryName FROM products JOIN categories ON products.categoryId = categories.categoryId where productId = ?",
         [productId]
       );
       return rows[0] || null;
